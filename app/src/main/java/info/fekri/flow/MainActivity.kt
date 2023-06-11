@@ -4,10 +4,9 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import info.fekri.flow.databinding.ActivityMainBinding
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
@@ -20,11 +19,13 @@ class MainActivity : AppCompatActivity() {
         val viewModel = MainViewModel(MainRepository())
 
         lifecycleScope.launch {
-            repeatOnLifecycle(state = Lifecycle.State.STARTED) {
-                viewModel.dataStudents.collect {
-                    Log.v("TEST_FLOW_MAIN_LOG", it.name)
-                }
+
+            viewModel.dataStudents
+                .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+                .collect {
+                Log.v("TEST_FLOW_MAIN_LOG", it.name)
             }
+
         }
 
     }
