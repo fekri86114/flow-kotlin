@@ -6,22 +6,19 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
-class MainViewModel(mainRepo: MainRepository) {
+class MainViewModel(): ViewModel() {
+    private val _counter = MutableStateFlow(0)
+    val counter : StateFlow<Int> get() = _counter
 
-    val dataStudents: Flow<StudentUi> = mainRepo.getAllFromApi()
-            .map {
-                StudentUi(it.id, it.name, it.lastName, it.grade)
-            }
-            .filter {
-                it.name.endsWith('7')
-            }
-            .catch {
-                Log.v("TEST_FLOW_LOG", it.message ?: "null message")
-            }
+    fun incrementCounter() {
+        _counter.value ++
+    }
 
 }

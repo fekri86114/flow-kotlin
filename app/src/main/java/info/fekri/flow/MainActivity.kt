@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import info.fekri.flow.databinding.ActivityMainBinding
@@ -13,23 +14,28 @@ import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
+    private lateinit var viewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val viewModel = MainViewModel(MainRepository())
-        val testStateFlow = MutableStateFlow(-1)
+        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
 
         lifecycleScope.launch {
-            testStateFlow.collect {
+            viewModel.counter.collect {
                 Log.v("testFlow", it.toString())
             }
         }
 
-        testStateFlow.value = 5
-        testStateFlow.value = 3
-        testStateFlow.value = 90
+        viewModel.incrementCounter()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        viewModel.incrementCounter()
 
     }
+
 }
