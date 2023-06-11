@@ -17,11 +17,15 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         val viewModel = MainViewModel(MainRepository())
 
-        lifecycleScope.launch {
-            viewModel.dataStudents.collect {
-                Log.v("TEST_FLOW_MAIN_LOG", it.name)
-            }
+        viewModel.dataStudents.observe(this) {
+            Log.v("TEST_FLOW_MAIN_LOG", it.name)
         }
+
+//        lifecycleScope.launch {
+//            viewModel.dataStudents.collect {
+//                Log.v("TEST_FLOW_MAIN_LOG", it.name)
+//            }
+//        }
 
     }
 }
