@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import info.fekri.flow.databinding.ActivityMainBinding
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
@@ -14,11 +15,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val viewModel = MainViewModel()
+        val viewModel = MainViewModel(MainRepository())
 
         lifecycleScope.launch {
-            viewModel.createFlow.collect {
-                Log.v("TEST_FLOW_LOG", it.toString())
+            viewModel.dataStudents.collect {
+                Log.v("TEST_FLOW_MAIN_LOG", it.name)
             }
         }
 
